@@ -1,0 +1,26 @@
+{
+    "name": "stratum-forms",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "workspaces": [
+        "./packages/stratum-forms",
+        "./packages/demo"
+    ],
+    "scripts": {
+        "dev": "npm run dev -w demo",
+        "build": "npm run build -w demo",
+        "preview": "npm run preview -w demo",
+        "dev:demo": "npm run dev -w demo",
+        "dev:lib": "npm run dev -w stratum-forms",
+        "build:demo": "npm run build -w demo",
+        "build:lib": "npm run build -w stratum-forms",
+        "preview:demo": "npm run preview -w demo",
+        "typecheck": "tsc --noEmit -p packages/stratum-forms/tsconfig.json && tsc --noEmit -p packages/demo/tsconfig.json",
+        "typecheck:demo": "tsc --noEmit -p packages/demo/tsconfig.json",
+        "typecheck:lib": "tsc --noEmit -p packages/stratum-forms/tsconfig.json",
+		"publish:lib": "npm publish -w stratum-forms",
+		"publish:lib-dry-run": "npm publish -w stratum-forms --dry-run"
+		
+    }
+}
