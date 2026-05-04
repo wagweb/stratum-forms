@@ -21,6 +21,5 @@
         "typecheck:lib": "tsc --noEmit -p packages/stratum-forms/tsconfig.json",
 		"publish:lib": "npm publish -w stratum-forms",
 		"publish:lib-dry-run": "npm publish -w stratum-forms --dry-run"
-		
     }
 }
