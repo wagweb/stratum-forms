@@ -5,7 +5,7 @@ export const VALID: ValidationResult = { isValid: true };
 
 // invalid helper
 export function invalid(message?: string): ValidationResult {
-    return { isValid: false, message };
+    return message === undefined ? { isValid: false } : { isValid: false, message };
 }
 
 // combine validators
@@ -24,7 +24,7 @@ export function combineValidators<ValueType>(
 }
 
 // required
-export function required(message = "This field is required"): ValidationFn<unknown> {
+export function required(message?: string): ValidationFn<unknown> {
     return (value) => {
         if (value === null || value === undefined) return invalid(message);
         if (typeof value === "string" && value.trim() === "") return invalid(message);
@@ -33,7 +33,7 @@ export function required(message = "This field is required"): ValidationFn<unkno
 }
 
 // required number
-export function requiredNumber(message = "This field is required"): ValidationFn<number | null | undefined> {
+export function requiredNumber(message?: string): ValidationFn<number | null | undefined> {
     return (value) => {
         if (value === null || value === undefined) return invalid(message);
         if (Number.isNaN(value)) return invalid(message);
@@ -45,7 +45,7 @@ export function requiredNumber(message = "This field is required"): ValidationFn
 export function minLength(min: number, message?: string): ValidationFn<string> {
     return (value) => {
         if (value === undefined || value === null || value === "") return VALID;
-        if (value.length < min) return invalid(message ?? `Must be at least ${min} characters`);
+        if (value.length < min) return invalid(message);
         return VALID;
     };
 }
@@ -54,14 +54,14 @@ export function minLength(min: number, message?: string): ValidationFn<string> {
 export function maxLength(max: number, message?: string): ValidationFn<string> {
     return (value) => {
         if (value === undefined || value === null) return VALID;
-        if (value.length > max) return invalid(message ?? `Must be at most ${max} characters`);
+        if (value.length > max) return invalid(message);
         return VALID;
     };
 }
 
 // pattern
 // empty string passes; stack with `required` if empty should fail
-export function pattern(regex: RegExp, message = "Invalid format"): ValidationFn<string> {
+export function pattern(regex: RegExp, message?: string): ValidationFn<string> {
     return (value) => {
         if (value === undefined || value === null || value === "") return VALID;
         if (!regex.test(value)) return invalid(message);
@@ -72,13 +72,13 @@ export function pattern(regex: RegExp, message = "Invalid format"): ValidationFn
 // email
 // simple regex
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export function email(message = "Invalid email address"): ValidationFn<string> {
+export function email(message?: string): ValidationFn<string> {
     return pattern(EMAIL_RE, message);
 }
 
 // url
 // empty passes; stack with `required` if empty should fail
-export function url(message = "Invalid URL"): ValidationFn<string> {
+export function url(message?: string): ValidationFn<string> {
     return (value) => {
         if (value === undefined || value === null || value === "") return VALID;
         const trimmed = value.trim();
@@ -97,14 +97,14 @@ export function url(message = "Invalid URL"): ValidationFn<string> {
 export function range(opts: { min?: number; max?: number; message?: string }): ValidationFn<number | null | undefined> {
     return (value) => {
         if (value === undefined || value === null || Number.isNaN(value)) return VALID;
-        if (opts.min !== undefined && value < opts.min) return invalid(opts.message ?? `Must be ≥ ${opts.min}`);
-        if (opts.max !== undefined && value > opts.max) return invalid(opts.message ?? `Must be ≤ ${opts.max}`);
+        if (opts.min !== undefined && value < opts.min) return invalid(opts.message);
+        if (opts.max !== undefined && value > opts.max) return invalid(opts.message);
         return VALID;
     };
 }
 // integer
 // (undefined/null/NaN passes — pair with requiredNumber if needed)
-export function integer(message = "Must be a whole number"): ValidationFn<number | null | undefined> {
+export function integer(message?: string): ValidationFn<number | null | undefined> {
     return (value) => {
         if (value === undefined || value === null || Number.isNaN(value)) return VALID;
         if (!Number.isInteger(value)) return invalid(message);

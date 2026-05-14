@@ -384,6 +384,11 @@ Empty/undefined behavior:
 - `required` / `requiredNumber` reject `undefined` / `null` / `""` / `NaN`.
 - `minLength`, `maxLength`, `pattern`, `email`, `url`, `range`, `integer` all **pass on empty/undefined** — combine with `required*` if empty must fail.
 
+Validator messages:
+
+- Optional `message` arguments are **never** back-filled with framework defaults. Omitting `message` yields `{ isValid: false }` with no `message` property, so `field.errorMessage` is `undefined` while `field.isInvalid` is still `true`. Pass a string when you want user-visible copy.
+- `invalid(message?)` matches that contract: no `message` key unless you pass a string.
+
 ### 4.12 Pure selectors (callable outside React)
 
 All accept `(state: FormsState, ...keys)` and are safe to use in validators, save handlers, tests, devtools.
@@ -483,8 +488,8 @@ const matches = (formKey: string, sibling: string): ValidationFn<string> => (val
 };
 
 const FIELDS: FieldConfigMap = {
-    password:        { validate: required() },
-    passwordConfirm: { validate: combineValidators(required(), matches("signup", "password")) },
+    password:        { validate: required("Enter a password") },
+    passwordConfirm: { validate: combineValidators(required("Confirm your password"), matches("signup", "password")) },
 };
 ```
 

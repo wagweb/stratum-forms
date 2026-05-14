@@ -87,7 +87,7 @@ const FIELDS: FieldConfigMap = {
     email: {
         label: "Email",
         description: "We use this for receipts only.",
-        validate: combineValidators(required(), email()),
+        validate: combineValidators(required("Please enter your email"), email("Enter a valid email")),
     },
 };
 
@@ -491,6 +491,7 @@ const summary = useFormSelector(
 
 Pure functions of type `ValidationFn<ValueType> = (value: ValueType | undefined) => { isValid: boolean; message?: string }`.
 
+Built-in helpers (`required`, `minLength`, `pattern`, `email`, and so on) never invent copy for you: if you omit the optional `message` argument, a failing check still returns `{ isValid: false }` with no `message`, so `useFormField`'s `errorMessage` stays `undefined`. Pass a string when you want text in the UI. The `invalid(message?)` helper follows the same rule.
 
 | Helper                             | Description                                                    |
 | ---------------------------------- | -------------------------------------------------------------- |
@@ -684,8 +685,11 @@ const matchesField = (formKey: string, sibling: string): ValidationFn<string> =>
 };
 
 const FIELDS: FieldConfigMap = {
-    password:        { label: "Password", validate: required() },
-    passwordConfirm: { label: "Confirm",  validate: combineValidators(required(), matchesField("signup", "password")) },
+    password:        { label: "Password", validate: required("Enter a password") },
+    passwordConfirm: {
+        label: "Confirm",
+        validate: combineValidators(required("Confirm your password"), matchesField("signup", "password")),
+    },
 };
 ```
 
